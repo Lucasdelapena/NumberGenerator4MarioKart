@@ -15,16 +15,23 @@ def main():
     #Generate the numbers
     random.shuffle(players)
 
-    for i in range(tvs):
-        for j in range(playerPerTv):
-            print("TV:", i+1, " Player: ", players[j])
-        players = np.delete(players, range(playerPerTv))
-        print()
+
+    while len(players) > 0:
+        for i in range(tvs):
+            for j in range(playerPerTv):
+                if len(players) == 0:
+                    break
+                print("TV:", i+1, " Player: ", players[j])
+            if len(players) == 0:
+                break
+            players = np.delete(players, range(playerPerTv))
+            print()
         
-    if len(players) > 0:
-        print("Remaining players: ")
-        for i in range(len(players)):
-            print("Player: ", players[i])
+    
+
+        #print("Remaining players: ")
+        #for i in range(len(players)):
+           #print("Player: ", players[i])
 
 
 
