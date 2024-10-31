@@ -19,21 +19,18 @@ def main():
     while len(players) > 0:
         for i in range(tvs):
             for j in range(playerPerTv):
+
                 if len(players) == 0:
                     break
-                print("TV:", i+1, " Player: ", players[j])
+
+                print("TV:", i+1, " Player: ", players[j]) #Print the player number
+
             if len(players) == 0:
                 break
-            players = np.delete(players, range(playerPerTv))
+
+            players = np.delete(players, range(playerPerTv)) # Remove the players that have been printed
             print()
         
-    
-
-        #print("Remaining players: ")
-        #for i in range(len(players)):
-           #print("Player: ", players[i])
-
-
 
 if __name__ == "__main__":
     main()
