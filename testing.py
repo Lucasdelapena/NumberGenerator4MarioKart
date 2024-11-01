@@ -1,26 +1,40 @@
-import numpy as np
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 
-def main():
-    print(19 % 4) # 3 
-    print(19 % 3) # 1
-    print(19 % 2) # 1
-    print(19 // 4) # 4
-
-    print(26 % 4)
-
-
-    print (16 % 5) # 1
-
-    print (18 % 4) # 2
-    print (18 % 3) # 0
-    print (18 % 2) # 0
-
-    print (17 % 4) # 1
-    print (17 % 3) # 2
-    print (17 % 2) # 1
-
+def updateWindow(nums, tvs):
+    # Clear the frame
+    for widget in frame.winfo_children():
+        widget.destroy()
     
+    ttk.Label(frame, text="Placements", style='TLabel', font=("Helvetica", 30, "bold")).pack(side = 'top', pady=30 )
+    ttk.Label(frame, text="Number of Players: " + str(nums), style='info.TLabel').pack(pady=10)
+    ttk.Label(frame, text="Number of TVs: " + str(tvs), style='info.TLabel').pack(pady=10)
+   
 
+def onSubmit():
+    num = int(inputnum.get())
+    tvs = int(inputtvs.get())
+    updateWindow(num, tvs)
 
-if __name__ == "__main__":
-    main()
+root = ttk.Window(themename="darkly")
+root.title("Mario Kart Tournament Generator")
+
+root.geometry("500x500")
+
+frame = ttk.Frame(root)
+frame.pack(expand = True)
+
+ttk.Label(frame, text="Mario Kart Tournament Generator", style='TLabel', font=("Helvetica", 16, "bold")).pack(pady=40)
+
+ttk.Label(frame, text="Number of Players", style='info.TLabel').pack(pady=10)
+inputnum = ttk.Spinbox(frame, from_=1, to=100, style='info.TSpinbox')
+inputnum.pack(pady=10)
+
+ttk.Label(frame, text="Number of TVs", style='info.TLabel').pack(pady=10)
+inputtvs = ttk.Spinbox(frame, from_=1, to=100, style='info.TSpinbox')
+inputtvs.pack(pady=10)
+
+b = ttk.Button(frame, text='Submit', style='info.TButton', command=onSubmit)
+b.pack(padx=5, pady=10)
+
+root.mainloop()
