@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import ttkbootstrap as ttk
+from tkinter import *
 from ttkbootstrap.constants import *
 
 def updateWindow(nums, tvs):
@@ -75,7 +76,8 @@ def placements(num, tvs):
                 playerPerTv = 3
             print()
 
-    ttk.Label(frame, text="End of Tournament", style='success.TLabel', font=("Helvetica", 18, "bold")).pack(pady=100)
+    ttk.Label(frame, text="", style='success.TLabel', font=("Helvetica", 18, "bold")).pack(pady=50)
+
 
 #Window
 root = ttk.Window(themename="darkly")
@@ -100,6 +102,18 @@ canvas.configure(yscrollcommand=scrollbar.set)
 
 #mouseWheel
 canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+
+#Menu
+menu = Menu(root)
+root.config(menu=menu)
+filemenu = Menu(menu)
+menu.add_cascade(label='File', menu=filemenu)
+filemenu.add_command(label='Reset')
+filemenu.add_separator()
+filemenu.add_command(label='Exit', command=root.quit)
+helpmenu = Menu(menu)
+menu.add_cascade(label='Help', menu=helpmenu)
+helpmenu.add_command(label='About')
 
 #Labels
 ttk.Label(frame, text="Mario Kart Tournament Generator", style='warning.TLabel', font=("Helvetica", 16, "bold")).pack(pady=40, anchor = 'center')
