@@ -20,6 +20,37 @@ def onSubmit():
     tvs = int(inputtvs.get())
     updateWindow(num, tvs)
 
+def reset():
+    # Clear the frame
+    for widget in frame.winfo_children():
+        widget.destroy()
+    
+    # Recreate the initial labels and input fields
+    ttk.Label(frame, text="Mario Kart Tournament Generator", style='warning.TLabel', font=("Helvetica", 16, "bold")).pack(pady=40, anchor='center')
+
+    ttk.Label(frame, text="Number of Players", style='info.TLabel').pack(pady=10, anchor='center')
+    global inputnum  # Declare as global to modify outside of function
+    inputnum = ttk.Spinbox(frame, from_=1, to=100, style='info.TSpinbox')
+    inputnum.pack(pady=10, anchor='center')
+
+    ttk.Label(frame, text="Number of TVs", style='info.TLabel').pack(pady=10, anchor='center')
+    global inputtvs  # Declare as global to modify outside of function
+    inputtvs = ttk.Spinbox(frame, from_=1, to=100, style='info.TSpinbox')
+    inputtvs.pack(pady=10, anchor='center')
+
+    # Button
+    global b  # Declare as global to modify outside of function
+    b = ttk.Button(frame, text='Submit', style='info.TButton', command=onSubmit)
+    b.pack(padx=5, pady=10, anchor='center')
+
+
+def showAbout():
+    aboutWindow = Toplevel(root)
+    aboutWindow.title("About")
+    aboutWindow.geometry("300x200")
+    about_label = ttk.Label(aboutWindow, text="This is the Mario Kart Tournament Generator.\nVersion 1.0\nDeveloped by Your Name", font=("Helvetica", 12))
+    about_label.pack(pady=50)
+                           
 
 def generateNumbers(num):
     oneRemaining, twoRemaining, threeRemaining = False, False, False
@@ -55,6 +86,15 @@ def placements(num, tvs):
     random.shuffle(players)
     round = 0
 
+    if len(players) <= 4:
+
+        ttk.Label(frame, text="Round 1", style='danger.TLabel', font=("Helvetica", 18, "bold")).pack(pady=10)
+        ttk.Label(frame, text="TV 1", style='TLabel', font=("Helvetica", 12, "bold")).pack(pady=10)
+        length = len(players)
+        for j in range(length):
+            ttk.Label(frame, text= "Player " + str(players[j]), style='info.TLabel').pack(pady=0)
+        players = np.delete(players,length) # Remove the players that have been printed
+
     while len(players) > 0:
         round += 1
         for i in range(tvs):
@@ -83,51 +123,52 @@ def placements(num, tvs):
 root = ttk.Window(themename="darkly")
 root.title("Mario Kart Tournament Generator")
 
-#Size
+# Size
 root.geometry("700x700")
 
-#Canvas and scrollbar
+# Canvas and scrollbar
 canvas = ttk.Canvas(root)
 scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
 scrollbar.pack(side="right", fill="y")
 canvas.pack(side="left", fill="both", expand=True)
 
-#Frame inside the canvas
+# Frame inside the canvas
 frame = ttk.Frame(canvas)
 canvas.create_window((0, 0), window=frame, anchor="n")
 
-#Configure the canvas to scroll with the scrollbar
+# Configure the canvas to scroll with the scrollbar
 frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 canvas.configure(yscrollcommand=scrollbar.set)
 
-#mouseWheel
-canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+# Mouse wheel
+canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
 
-#Menu
+# Menu
 menu = Menu(root)
 root.config(menu=menu)
 filemenu = Menu(menu)
 menu.add_cascade(label='File', menu=filemenu)
-filemenu.add_command(label='Reset')
+filemenu.add_command(label='Reset', command=reset)
 filemenu.add_separator()
 filemenu.add_command(label='Exit', command=root.quit)
 helpmenu = Menu(menu)
 menu.add_cascade(label='Help', menu=helpmenu)
-helpmenu.add_command(label='About')
+helpmenu.add_command(label=showAbout)
 
-#Labels
-ttk.Label(frame, text="Mario Kart Tournament Generator", style='warning.TLabel', font=("Helvetica", 16, "bold")).pack(pady=40, anchor = 'center')
 
-ttk.Label(frame, text="Number of Players", style='info.TLabel').pack(pady=10)
+# Labels
+ttk.Label(frame, text="Mario Kart Tournament Generator", style='warning.TLabel', font=("Helvetica", 16, "bold")).pack(pady=40, anchor='center')
+
+ttk.Label(frame, text="Number of Players", style='info.TLabel').pack(pady=10, anchor='center')
 inputnum = ttk.Spinbox(frame, from_=1, to=100, style='info.TSpinbox')
-inputnum.pack(pady=10, anchor = 'center')
+inputnum.pack(pady=10, anchor='center')
 
-ttk.Label(frame, text="Number of TVs", style='info.TLabel').pack(pady=10)
+ttk.Label(frame, text="Number of TVs", style='info.TLabel').pack(pady=10, anchor='center')
 inputtvs = ttk.Spinbox(frame, from_=1, to=100, style='info.TSpinbox')
-inputtvs.pack(pady=10, anchor = 'center')
+inputtvs.pack(pady=10, anchor='center')
 
-#Button
+# Button
 b = ttk.Button(frame, text='Submit', style='info.TButton', command=onSubmit)
-b.pack(padx=5, pady=10, anchor = 'center')
+b.pack(padx=5, pady=10, anchor='center')
 
 root.mainloop()
