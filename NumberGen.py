@@ -57,9 +57,6 @@ def generateNumbers(num):
     
     if num % 4 == 0: #if the number is evenly divisible
         playerPerTv = 4
-
-    #elif num % 3 == 0: #3 playres per tv
-        #playerPerTv = 3
     
     else:
         playerPerTv = 4
@@ -75,6 +72,32 @@ def generateNumbers(num):
 
     return playerPerTv, oneRemaining, twoRemaining, threeRemaining
 
+def threePerTv(players, tvs, nums):
+    for widget in frame.winfo_children():
+        widget.destroy()
+    ttk.Label(frame, text="Placements", style='warning.TLabel', font=("Helvetica", 30, "bold")).pack(side = 'top', pady=30 )
+    ttk.Label(frame, text="Number of Players: " + str(nums), style='TLabel').pack(pady=0)
+    ttk.Label(frame, text="Number of TVs: " + str(tvs), style='TLabel').pack(pady=0)
+    round = 0
+    playerPerTv = 3
+    while len(players) > 0: #works with 7 and up
+        round += 1
+        for i in range(tvs):
+            if i == 0 and len(players) != 0:
+                ttk.Label(frame, text="Round " + str(round), style='danger.TLabel', font=("Helvetica", 18, "bold")).pack(pady=10)
+            if len(players) != 0:
+                ttk.Label(frame, text="TV "+ str(i+1), style='TLabel', font=("Helvetica", 12, "bold")).pack(pady=10)
+            for j in range(playerPerTv):
+                if len(players) == 0:
+                    break
+                ttk.Label(frame, text= "Player " + str(players[j]), style='info.TLabel').pack(pady=0)
+            if len(players) == 0:
+                break
+            players = np.delete(players, range(playerPerTv)) # Remove the players that have been printed
+            print()
+
+    ttk.Label(frame, text="", style='success.TLabel', font=("Helvetica", 18, "bold")).pack(pady=50)
+    
 def placements(num, tvs):
     # Calculate Players per TV
     playerPerTv, oneRemaining, twoRemaining, threeRemaining = generateNumbers(num)
@@ -85,6 +108,14 @@ def placements(num, tvs):
     #Generate the numbers
     random.shuffle(players)
     round = 0
+    #ttk.Label(frame, text="" + str(tvs), style='TLabel').pack(pady=0)
+    
+    if num % 3 == 0:
+        ttk.Label(frame, text="This is divisible by 3.", style='danger.TLabel', font="bo").pack(pady=(20,0))
+        ttk.Label(frame, text="Did you want to have 3 players per tv?", style='TLabel').pack(pady=0)
+        players2 = players
+        three = ttk.Button(frame, text='3 per tv', style='info.TButton', command=lambda: threePerTv(players2, tvs, num))
+        three.pack(padx=5, pady=10, anchor='center')
 
     if len(players) <= 4:
 
@@ -95,7 +126,20 @@ def placements(num, tvs):
             ttk.Label(frame, text= "Player " + str(players[j]), style='info.TLabel').pack(pady=0)
         players = np.delete(players,length) # Remove the players that have been printed
 
-    while len(players) > 0:
+    if len(players) == 5:
+        ttk.Label(frame, text="Round 1", style='danger.TLabel', font=("Helvetica", 18, "bold")).pack(pady=10)
+        ttk.Label(frame, text="TV 1", style='TLabel', font=("Helvetica", 12, "bold")).pack(pady=10)
+        for j in range(3):
+            ttk.Label(frame, text= "Player " + str(players[j]), style='info.TLabel').pack(pady=0)
+        players = np.delete(players,range(3)) # Remove the players that have been printed
+        print()
+        ttk.Label(frame, text="Round 2", style='danger.TLabel', font=("Helvetica", 18, "bold")).pack(pady=10)
+        ttk.Label(frame, text="TV 2", style='TLabel', font=("Helvetica", 12, "bold")).pack(pady=10)
+        for j in range(2):
+            ttk.Label(frame, text= "Player " + str(players[j]), style='info.TLabel').pack(pady=0)
+        players = np.delete(players,range(2)) # Remove the players that have been printed
+
+    while len(players) > 0: #works with 7 and up
         round += 1
         for i in range(tvs):
             if i == 0 and len(players) != 0:
@@ -105,8 +149,6 @@ def placements(num, tvs):
             for j in range(playerPerTv):
                 if len(players) == 0:
                     break
-                #print("TV:", i+1, " Player: ", players[j]) #Print the player number
-                #ttk.Label(frame, text="TV "+ i+1, style='TLabel', font=("Helvetica", 18, "bold")).pack(pady=10)
                 ttk.Label(frame, text= "Player " + str(players[j]), style='info.TLabel').pack(pady=0)
             if len(players) == 0:
                 break
@@ -124,7 +166,7 @@ root = ttk.Window(themename="darkly")
 root.title("Mario Kart Tournament Generator")
 
 # Size
-root.geometry("700x700")
+root.geometry("500x700") #make the window smaller
 
 # Canvas and scrollbar
 canvas = ttk.Canvas(root)
