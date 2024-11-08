@@ -160,6 +160,9 @@ def placements(num, tvs):
 
     ttk.Label(frame, text="", style='success.TLabel', font=("Helvetica", 18, "bold")).pack(pady=50)
 
+def _on_mouse_wheel(event):
+    frame.yview_scroll(int(-1*(event.delta/120)), "units")
+
 
 #Window
 root = ttk.Window(themename="darkly")
@@ -168,22 +171,30 @@ root.title("Mario Kart Tournament Generator")
 # Size
 root.geometry("500x700") #make the window smaller
 
+frame = ttk.Frame(root)
+frame.pack(expand = True, fill='both')
+
+frame.bind_all("<MouseWheel>", _on_mouse_wheel)
+
+
 # Canvas and scrollbar
-canvas = ttk.Canvas(root)
-scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
-scrollbar.pack(side="right", fill="y")
-canvas.pack(side="left", fill="both", expand=True)
+#canvas = ttk.Canvas(root)
+#scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
+#scrollbar.pack(side="right", fill="y")
+#canvas.pack(side="left", fill="both", expand=True)
 
 # Frame inside the canvas
-frame = ttk.Frame(canvas)
-canvas.create_window((0, 0), window=frame, anchor="n")
+#frame = ttk.Frame(canvas)
+#canvas.create_window((0, 0), window=frame, anchor="n")
 
 # Configure the canvas to scroll with the scrollbar
-frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-canvas.configure(yscrollcommand=scrollbar.set)
+#frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+#canvas.configure(yscrollcommand=scrollbar.set)
 
 # Mouse wheel
-canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
+#canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
+
+
 
 # Menu
 menu = Menu(root)
