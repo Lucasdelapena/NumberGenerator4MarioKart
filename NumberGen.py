@@ -1,14 +1,17 @@
+import os
+import sys
 import numpy as np
 import random
 import ttkbootstrap as ttk
 from tkinter import *
 from ttkbootstrap.constants import *
+from PIL import Image, ImageTk
 
 def updateWindow(nums, tvs):
     # Clear the frame
     for widget in secondFrame.winfo_children():
         widget.destroy()
-    outerFrame.geometry("500x700")
+    outerFrame.geometry("400x700")
     #ttk.Scrollbar(secondFrame, orient='vertical').pack(side='right', fill='y')
     ttk.Label(secondFrame, text="Placements", style='warning.TLabel', font=("Helvetica", 30, "bold")).pack(side = 'top', pady=30 )
     ttk.Label(secondFrame, text="Number of Players: " + str(nums), style='TLabel').pack(pady=0)
@@ -42,13 +45,23 @@ def reset():
     global b  # Declare as global to modify outside of function
     b = ttk.Button(secondFrame, text='Submit', style='info.TButton', command=onSubmit)
     b.pack(padx=5, pady=10, anchor='center')
+    imageLabel = ttk.Label(secondFrame, image=photo)
+    imageLabel.image = photo
+    imageLabel.pack(side = BOTTOM, pady =10)
 
 def showAbout():
     aboutWindow = Toplevel(outerFrame)
     aboutWindow.title("About")
-    aboutWindow.geometry("300x200")
-    about_label = ttk.Label(aboutWindow, text="This is the Mario Kart Tournament Generator.\nVersion 1.0\nDeveloped by Your Name", font=("Helvetica", 12))
-    about_label.pack(pady=50)                         
+    aboutWindow.geometry("800x400")
+    about_label = ttk.Label(aboutWindow, text="This is the Mario Kart Tournament Generator.\nVersion 1.0\nDeveloped by Lucas de la Pena", font=("Helvetica", 12))
+    about_label.pack(pady=50)
+    description_label = ttk.Label(aboutWindow, text="Description:", font=("Helvetica", 12))
+    description_label.pack(pady=5)
+    
+    descrip1 = ttk.Label(aboutWindow, text="This program generates the placements for a Mario Kart tournament. It takes the number of players and the \n number of TVs as input and outputs the placements for each round. If the players can be divisable by 3 \n it will ask the user if they want to divide the player into groups of 3", font=("Helvetica", 12))
+    descrip1.pack(pady=1)
+    descrip3 = ttk.Label(aboutWindow, text="Bovey is stanky", font=("Helvetica", 12))
+    descrip3.pack(pady=1)
 
 def generateNumbers(num):
     oneRemaining, twoRemaining, threeRemaining = False, False, False
@@ -159,31 +172,52 @@ def placements(num, tvs):
 
     ttk.Label(secondFrame, text="", style='success.TLabel', font=("Helvetica", 18, "bold")).pack(pady=50)
 
+def on_mouse_wheel(event):
+    myCanvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
+def centerFrame(event):
+    canvasWidth = event.width
+    frameWidth = secondFrame.winfo_reqwidth()
+    x = (canvasWidth - frameWidth) // 2
+    myCanvas.coords(windowId, x, 0)
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 # Window
 outerFrame = ttk.Window(themename="darkly")
 outerFrame.title("Mario Kart Tournament Generator")
 
 # Size
-outerFrame.geometry("500x450") #make the window smaller
+outerFrame.geometry("400x450") #make the window smaller
 
 # Canvas
 myCanvas = Canvas(outerFrame)
 myCanvas.pack(side=LEFT, fill=BOTH, expand=True)
+myCanvas.bind("<Configure>", centerFrame)
 
 # scrollbar
 myScrollbar = ttk.Scrollbar(outerFrame, orient=VERTICAL, command=myCanvas.yview)
 myScrollbar.pack(side=RIGHT, fill=Y)
 
-# configure the canvas
+# Configure the canvas to scroll with the scrollbar
+outerFrame.bind("<Configure>", lambda e: myCanvas.configure(scrollregion=myCanvas.bbox("all")))
 myCanvas.configure(yscrollcommand=myScrollbar.set)
-myCanvas.bind('<Configure>', lambda e: myCanvas.configure(scrollregion = myCanvas.bbox("all")))
+
+# Bind the mouse wheel event to the canvas
+myCanvas.bind_all("<MouseWheel>", on_mouse_wheel)
 
 # Second Frame
 secondFrame = ttk.Frame(myCanvas)
 myCanvas.create_window((0,0), window=secondFrame, anchor="nw")
+windowId = myCanvas.create_window((0, 0), window=secondFrame, anchor="nw")
 
 
 # Menu
@@ -194,9 +228,11 @@ menu.add_cascade(label='File', menu=filemenu)
 filemenu.add_command(label='Reset', command=reset)
 filemenu.add_separator()
 filemenu.add_command(label='Exit', command=outerFrame.quit)
+
+#Help menu
 helpmenu = Menu(menu)
 menu.add_cascade(label='Help', menu=helpmenu)
-helpmenu.add_command(label=showAbout)
+helpmenu.add_command(label='About', command=showAbout)
 
 # Labels
 ttk.Label(secondFrame, text="Mario Kart Tournament Generator", style='warning.TLabel', font=("Helvetica", 16, "bold")).pack(pady=40, anchor='center')
@@ -212,5 +248,16 @@ inputtvs.pack(pady=10, anchor='center')
 # Button
 b = ttk.Button(secondFrame, text='Submit', style='info.TButton', command=onSubmit)
 b.pack(padx=5, pady=10, anchor='center')
+
+# Image
+imagePath = resource_path("yoshi.png")
+image = Image.open(imagePath)
+image = image.resize((50, 50), Image.LANCZOS)
+photo = ImageTk.PhotoImage(image)
+
+# Create a label with the image
+imageLabel = ttk.Label(secondFrame, image=photo)
+imageLabel.image = photo
+imageLabel.pack(side = BOTTOM, pady =10)
 
 outerFrame.mainloop()
